@@ -1,3 +1,8 @@
+// Architecture Overview (Mobile App Controller):
+// UI Layer: main.dart (Handles the entire main interface).
+// Identity System: Manages user IDs/names and handles authentication.
+// Data Manager: Oversees all user and robot-related information.
+
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'mqtt_manager.dart';
