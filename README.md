@@ -7,38 +7,38 @@ A Flutter-based mobile controller for the Platypus robot — a Raspberry Pi–po
 
 ---
 
-## 📱 Screenshots
+## Screenshots
 
 > _(Add screenshots here — Home screen / Owner registration / Status dashboard)_
 
 ---
 
-## ✨ Features
+## Features
 
-### 👤 Owner Registration (3-Step Flow)
+### Owner Registration (3-Step Flow)
 - **Step 1 — Voice Training**: Reads 3 custom scripts aloud; recognized via `speech_to_text`
 - **Step 2 — Face Capture**: Takes a front-camera photo and extracts facial landmarks (eye distance, eye-to-nose ratio) using **Google ML Kit**
 - **Step 3 — Save**: Stores owner profile with name, voice pitch, and face features
 
-### 📡 MQTT Communication
+### MQTT Communication
 - Connects to the robot over **MQTT** (`test.mosquitto.org`)
 - Sends real-time control commands to `robot/control` topic
 - Subscribes to `robot/status` topic for live feedback
 - **Dummy mode**: App stays fully functional even without hardware connected
 
-### 📊 Robot Status Dashboard
+### Robot Status Dashboard
 - Real-time monitoring of battery, temperature, network, and sensor health
 - Color-coded status cards (Excellent → Critical) with animated transitions
 - Auto-refreshes every 3 seconds
 - Warning snackbar when sensor enters critical state
 
-### 📍 GPS Location Tracking
+### GPS Location Tracking
 - Fetches robot's current GPS coordinates via `geolocator`
 - Displays latitude, longitude, and accuracy
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────────────────────────────┐
@@ -65,7 +65,7 @@ A Flutter-based mobile controller for the Platypus robot — a Raspberry Pi–po
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Category | Technology |
 |---|---|
@@ -80,7 +80,7 @@ A Flutter-based mobile controller for the Platypus robot — a Raspberry Pi–po
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Flutter SDK `^3.11.1`
@@ -102,7 +102,7 @@ All UI features (owner registration, status dashboard) work normally without a p
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 platypus-controller/
@@ -116,7 +116,7 @@ platypus-controller/
 
 ---
 
-## 🔗 Related Repository
+## Related Repository
 
 | Repo | Description |
 |---|---|
@@ -124,8 +124,8 @@ platypus-controller/
 
 ---
 
-## 👩‍💻 Author
+## Author
 
 **Sujin Ji** — Embedded systems & Flutter developer  
-📧 _(your email)_  
+📧 suj50737@gmail.com 
 🔗 [GitHub](https://github.com/SujinJi)
