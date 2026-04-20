@@ -1,4 +1,4 @@
-# 🦆 Platypus Robot Controller App
+# Platypus Robot Controller App
 
 A Flutter-based mobile controller for the Platypus robot — a Raspberry Pi–powered quadruped that responds to its owner's voice, face, and touch.
 
