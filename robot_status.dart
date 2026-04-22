@@ -1,23 +1,24 @@
 /*
-<로봇 상태 모니터링 대시보드>
-- 로봇의 현재 건강 상태를 한눈에 보여주는 '계기판'역할을 함
+<Robot Status Monitoring Dashboard>
 
-1. 데이터 시각화:
-베터리 잔량, 온도, 네트워크 연결 상태 등의 텍스트 데이터를 카드 위젯 형태로
-깔끔하게 정리하여 보여줌
+Serves as a "control panel" that displays the robot's current health status at a glance.
 
-2. 상태 리포트:
-복잡한 제어 로직보다는 현재 로봇의 하드웨어 상황을 사용자에게
-전달하는 네 집중함
-
-3. 센서 데이터 값(베터리, 온도, 네트워크, 센서 상태)를 주기적으로 받아옴
-4. 받아온 값에 따라 _getStatusTheme(score)에 전달하는 점수(score)가 바뀜
-5. 점수가 바뀌면 색상과 텍스트가 자동으로 변함
+1. Data Visualization: 
+Sensor data such as battery level, temperature, and network connection status are neatly organized and displayed as card widgets.
+2. Status Report:
+Rather than complex control logic, the focus is on communicating the robot's current hardware condition to the user.
+3. Periodic Data Fetching:
+Sensor data values (battery, temperature, network, and sensor status) are fetched at regular intervals.
+4. Score-Based Logic:
+The score passed to _getStatusTheme(score) changes dynamically based on the fetched values.
+5. Reactive Theming:
+When the score changes, the color scheme and status text update automatically.
 */
-import 'dart:async'; // 일정 시간마다 함수를 실행하기 위한 Timer 클래스 포함
+
+import 'dart:async'; // Include Class Timer in order to execute the function periodically
 import 'package:flutter/material.dart';
 
-// [화면 위젯] 로봇의 하드웨어 상태(배터리, 네트워크 등)를 실시간으로 보여주는 대시보드입니다.
+// [Screen Widget] Timly dashboard which shows the Robot HW State(Battery, Network etc).
 class RobotStatusScreen extends StatefulWidget {
   const RobotStatusScreen({super.key});
 
