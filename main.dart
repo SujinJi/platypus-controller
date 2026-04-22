@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: '오리너구리 로봇 제어',
+      title: 'Controlling the Platypus Robot',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         useMaterial3: true,
@@ -40,7 +40,7 @@ class HomeMenuScreen extends StatefulWidget {
 }
 
 class _HomeMenuScreenState extends State<HomeMenuScreen> {
-  final String _robotName = "플래티퍼스";
+  final String _robotName = "Platypus";
   final MqttManager _mqttManager = MqttManager();
   bool _mqttConnected = false;
 
@@ -78,13 +78,13 @@ class _HomeMenuScreenState extends State<HomeMenuScreen> {
                 const Icon(Icons.smart_toy_rounded, size: 140, color: Colors.indigo),
                 const SizedBox(height: 20),
                 Text(
-                  "$_robotName 지능형 제어",
+                  "$_robotName Intelligent control",
                   style: const TextStyle(
                       fontSize: 24, fontWeight: FontWeight.bold, letterSpacing: 1.2),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  _mqttConnected ? "현재 시스템 정상 작동 중" : "더미 모드 (하드웨어 미연결)",
+                  _mqttConnected ? "Operating Current System" : "Dummy Mode (Hardware Disconnect)",
                   style: TextStyle(
                     color: _mqttConnected ? Colors.green : Colors.orange,
                     fontWeight: FontWeight.w500,
@@ -92,11 +92,11 @@ class _HomeMenuScreenState extends State<HomeMenuScreen> {
                 ),
                 const SizedBox(height: 50),
 
-                // ① 주인 관리 센터
+                // ① User Management Center
                 _buildMenuButton(
                   context,
-                  "주인 관리 센터",
-                  "주인 등록, 수정 및 위치 추적",
+                  "User Management Center",
+                  "Register User, Revise or destination detect",
                   Icons.person_search_rounded,
                   Colors.blue,
                   const MultiOwnerControlScreen(),
@@ -104,11 +104,11 @@ class _HomeMenuScreenState extends State<HomeMenuScreen> {
 
                 const SizedBox(height: 16),
 
-                // ② 로봇 상태 리포트
+                // ② Reporting Robot Statement 
                 _buildMenuButton(
                   context,
-                  "로봇 상태 리포트",
-                  "시스템 진단 및 하드웨어 로그 확인",
+                  "Reporting Robot Statement",
+                  "System Diagnosis and Checking Hardware-Log",
                   Icons.insights_rounded,
                   Colors.teal,
                   const RobotStatusScreen(),
