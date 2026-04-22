@@ -1,17 +1,21 @@
 /*
-<주인 등록 및 관리 화면>
+<Owner Registration and Management Screen>
 
-[등록 흐름]
-1단계 - 목소리 학습: 스크립트 3개를 읽어 음성 인식 완료
-2단계 - 얼굴 촬영:  카메라로 얼굴 촬영 → ML Kit으로 랜드마크 추출
-3단계 - 최종 저장:  OwnerData로 묶어 리스트에 저장
+Registration Flow
+Step 1 – Voice Training:
+Read three predefined scripts to complete voice recognition.
+Step 2 – Face Capture:
+Capture the face using the camera → Extract facial landmarks using ML Kit.
+Step 3 – Final Save:
+Combine the data into OwnerData and store it in the list.
 
-[핵심 수정 사항]
-- _scripts 빈 리스트 크래시 방지 (initState에서 setState 제거)
-- 목소리 학습 완료 전 등록 버튼 비활성화
-- 얼굴 특징값을 카드에 표시
-- 등록 단계를 Step 표시기로 시각화
-- 위치 추적을 별도 섹션으로 분리
+<Key Updates>
+
+Prevented crashes caused by an empty _scripts list (removed setState call in initState)
+Disabled the registration button until voice training is completed
+Display facial feature values on the owner card
+Visualized the registration process using a step indicator
+Separated location tracking into an independent section
 */
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
@@ -21,7 +25,7 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:math';
 
 // ─────────────────────────────────────────
-// 데이터 모델
+// Data Model
 // ─────────────────────────────────────────
 class OwnerData {
   String id;
@@ -42,7 +46,7 @@ class OwnerData {
 }
 
 // ─────────────────────────────────────────
-// 화면
+// Homescreen
 // ─────────────────────────────────────────
 class MultiOwnerControlScreen extends StatefulWidget {
   const MultiOwnerControlScreen({super.key});
@@ -58,17 +62,17 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
   final stt.SpeechToText _speech = stt.SpeechToText();
   bool _isListening = false;
 
-  String _robotName = "플래티퍼스";
+  String _robotName = "PLATYPUS";
   late List<String> _scripts;
   int _currentScriptIndex = 0;
 
-  // 등록 단계: 0=목소리학습, 1=얼굴촬영, 2=등록완료
+  // Registeration Process: 0 -> Learning voice (intonation and vibration), 1 -> take a face photo, 2-> Complete
   int _step = 0;
   Map<String, double> _pendingFaceFeatures = {};
   double _pendingVoicePitch = 0;
 
   List<OwnerData> _ownerList = [];
-  String _status = "STEP 1: '목소리 인식 시작' 버튼을 누르고 스크립트를 읽어주세요.";
+  String _status = "STEP 1: 'Starting to detect voice' Please Push the buttom and read the script.";
 
   Position? _robotPosition;
   bool _isLocating = false;
@@ -76,7 +80,7 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
   @override
   void initState() {
     super.initState();
-    // setState 없이 직접 초기화 → 빌드 시점에 리스트 보장
+    // initinalize without setState → guarantee the risk in the state of 'Build'
     _scripts = _buildScripts(_robotName);
     _faceDetector =
         FaceDetector(options: FaceDetectorOptions(enableLandmarks: true));
@@ -84,10 +88,10 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
   }
 
   List<String> _buildScripts(String name) =>
-      ["$name야", "$name 안녕", "$name 오늘 어때"];
+      ["Hey $name", "Hello $name", "How are you up to $name"];
 
   // ─────────────────────────────────────────
-  // 카메라 초기화 (전면 카메라 우선)
+  // Initionalize the Camera (Priority to the front camera)
   // ─────────────────────────────────────────
   Future<void> _initCamera() async {
     final cameras = await availableCameras();
@@ -105,23 +109,23 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
   }
 
   // ─────────────────────────────────────────
-  // STEP 1 — 목소리 학습
+  // STEP 1 — Learning the user's voice
   // ─────────────────────────────────────────
   void _startVoiceTraining() async {
     if (_step != 0) return;
 
     bool available = await _speech.initialize(
-      onError: (e) => setState(() => _status = "음성 인식 오류: ${e.errorMsg}"),
+      onError: (e) => setState(() => _status = "Failed to detect voice: ${e.errorMsg}"),
     );
 
     if (!available) {
-      setState(() => _status = "마이크 권한이 없거나 음성 인식을 지원하지 않는 기기입니다.");
+      setState(() => _status = "It has no responsible to record voice or detect voice.");
       return;
     }
 
     setState(() {
       _isListening = true;
-      _status = "말씀하세요 → \"${_scripts[_currentScriptIndex]}\"";
+      _status = "Please say it → \"${_scripts[_currentScriptIndex]}\"";
     });
 
     _speech.listen(
@@ -136,20 +140,20 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
           if (_currentScriptIndex < _scripts.length - 1) {
             setState(() {
               _currentScriptIndex++;
-              _status = "✅ 인식 성공! 다음 → \"${_scripts[_currentScriptIndex]}\"";
+              _status = "✅ Complete to detect! Next → \"${_scripts[_currentScriptIndex]}\"";
             });
           } else {
             _pendingVoicePitch = 130.0 + Random().nextInt(100).toDouble();
             setState(() {
               _isListening = false;
               _step = 1;
-              _status = "✅ 목소리 학습 완료! STEP 2: 카메라를 보고 '얼굴 촬영' 버튼을 누르세요.";
+              _status = "✅ Complete to record the voice! STEP 2: Click the 'photo-shot!' button after gazing the camera.";
             });
             _speech.stop();
           }
         } else {
           setState(() =>
-              _status = "❌ 다시 읽어주세요 → \"${_scripts[_currentScriptIndex]}\"");
+              _status = "❌ Try it Again → \"${_scripts[_currentScriptIndex]}\"");
         }
       },
       listenFor: const Duration(seconds: 10),
@@ -159,16 +163,16 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
   }
 
   // ─────────────────────────────────────────
-  // STEP 2 — 얼굴 촬영 & ML Kit 분석
+  // STEP 2 — Taking a face shot & ML Kit analysing
   // ─────────────────────────────────────────
   Future<void> _takeFacePhoto() async {
     if (_step != 1) return;
     if (_cameraController == null || !_cameraController!.value.isInitialized) {
-      setState(() => _status = "카메라가 준비되지 않았습니다.");
+      setState(() => _status = "Not ready for taking a face-shot.");
       return;
     }
 
-    setState(() => _status = "촬영 중...");
+    setState(() => _status = "Processing...");
 
     try {
       final imageFile = await _cameraController!.takePicture();
@@ -196,25 +200,25 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
 
         setState(() {
           _step = 2;
-          _status = "✅ 얼굴 인식 성공! STEP 3: '등록 완료' 버튼을 누르세요.";
+          _status = "✅ Complete to detect face! STEP 3: Press the 'Registration Complete' button.";
         });
       } else {
         setState(
-            () => _status = "❌ 얼굴을 인식하지 못했습니다. 정면을 바라보고 다시 시도하세요.");
+            () => _status = "❌ Unable to detect the user's face. Try again gazing on the front camera.");
       }
     } catch (e) {
-      setState(() => _status = "촬영 오류: $e");
+      setState(() => _status = "Failed to take a face-shot: $e");
     }
   }
 
   // ─────────────────────────────────────────
-  // STEP 3 — 최종 저장
+  // STEP 3 — final saving 
   // ─────────────────────────────────────────
   void _addOwner() {
     if (_step != 2) return;
 
     final nameController =
-        TextEditingController(text: "주인 ${_ownerList.length + 1}");
+        TextEditingController(text: "Owner ${_ownerList.length + 1}");
 
     showDialog(
       context: context,
