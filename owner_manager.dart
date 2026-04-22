@@ -252,11 +252,11 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
                 _step = 0;
                 _currentScriptIndex = 0;
                 _pendingFaceFeatures = {};
-                _status = "등록 완료! 다음 주인을 등록하려면 STEP 1부터 시작하세요.";
+                _status = "Complete to register! If you are willing to register the next User, start from 'Step 1'.";
               });
               Navigator.pop(ctx);
             },
-            child: const Text("등록"),
+            child: const Text("Registered"),
           ),
         ],
       ),
@@ -264,7 +264,7 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
   }
 
   // ─────────────────────────────────────────
-  // 주인 이름 수정
+  // changing the user's name
   // ─────────────────────────────────────────
   void _editOwnerName(int index) {
     final editController =
@@ -272,20 +272,20 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text("주인 정보 수정"),
+        title: const Text("Changing the user information"),
         content: TextField(
           controller: editController,
-          decoration: const InputDecoration(labelText: "새 이름 입력"),
+          decoration: const InputDecoration(labelText: "Enter the new name"),
         ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(ctx), child: const Text("취소")),
+              onPressed: () => Navigator.pop(ctx), child: const Text("Cancel")),
           TextButton(
             onPressed: () {
               setState(() => _ownerList[index].name = editController.text);
               Navigator.pop(ctx);
             },
-            child: const Text("저장"),
+            child: const Text("Save"),
           ),
         ],
       ),
@@ -293,7 +293,7 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
   }
 
   // ─────────────────────────────────────────
-  // GPS 위치 추적
+  // Detecting the postion by GPS
   // ─────────────────────────────────────────
   Future<void> _getRobotLocation() async {
     setState(() => _isLocating = true);
@@ -305,7 +305,7 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
     if (permission == LocationPermission.deniedForever) {
       setState(() {
         _isLocating = false;
-        _status = "위치 권한이 영구적으로 거부되어 있습니다. 설정에서 허용해주세요.";
+        _status = "Permission of the current position is permanently rejected. Please allow this in Setting!";
       });
       return;
     }
@@ -316,18 +316,18 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
       setState(() {
         _robotPosition = position;
         _isLocating = false;
-        _status = "📍 로봇 위치 업데이트 완료";
+        _status = "📍 Completed to update the robot position";
       });
     } catch (e) {
       setState(() {
         _isLocating = false;
-        _status = "위치 정보를 가져올 수 없습니다.";
+        _status = "Unable to bring the position information.";
       });
     }
   }
 
   // ─────────────────────────────────────────
-  // 로봇 이름 설정
+  // Setting the robot name
   // ─────────────────────────────────────────
   void _showRobotSettings() {
     final nameController = TextEditingController(text: _robotName);
@@ -345,13 +345,13 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("🤖 로봇 설정",
+            const Text("🤖 Setting the robot",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
             TextField(
               controller: nameController,
               decoration: const InputDecoration(
-                labelText: "로봇 이름",
+                labelText: "Robot Name",
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.smart_toy_rounded),
               ),
@@ -369,7 +369,7 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
                   });
                   Navigator.pop(ctx);
                 },
-                child: const Text("저장"),
+                child: const Text("Save"),
               ),
             ),
             const SizedBox(height: 20),
@@ -394,7 +394,7 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("$_robotName 관리 센터"),
+        title: Text("$_robotName Setting Sensor"),
         centerTitle: true,
         actions: [
           IconButton(
@@ -427,9 +427,9 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
     );
   }
 
-  // ── 단계 표시기 ──
+  // ── Stage indicater ──
   Widget _buildStepIndicator() {
-    final steps = ["목소리\n학습", "얼굴\n촬영", "등록\n완료"];
+    final steps = ["voice\nlearning", "face\nshot", "registeration\ncomplete"];
     return Row(
       children: List.generate(steps.length, (i) {
         final isActive = i == _step;
@@ -480,7 +480,7 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
     );
   }
 
-  // ── 상태 배너 ──
+  // ── state banner ──
   Widget _buildStatusBanner() {
     return Container(
       width: double.infinity,
@@ -495,12 +495,12 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
     );
   }
 
-  // ── 카메라 섹션 ──
+  // ── camera section ──
   Widget _buildCameraSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text("📷 얼굴 촬영",
+        const Text("📷 face-shot",
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
         const SizedBox(height: 8),
         ClipRRect(
@@ -520,7 +520,7 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
                           Icon(Icons.camera_alt_outlined,
                               size: 48, color: Colors.grey),
                           SizedBox(height: 8),
-                          Text("카메라 초기화 중...",
+                          Text("Initionalizing the camera info...",
                               style: TextStyle(color: Colors.grey)),
                         ],
                       ),
@@ -534,7 +534,7 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
           child: ElevatedButton.icon(
             onPressed: _step == 1 ? _takeFacePhoto : null,
             icon: const Icon(Icons.camera),
-            label: const Text("얼굴 촬영"),
+            label: const Text("face shot"),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.teal,
               foregroundColor: Colors.white,
@@ -546,7 +546,7 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
     );
   }
 
-  // ── 목소리 섹션 ──
+  // ── voice section ──
   Widget _buildVoiceSection() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -557,7 +557,7 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("🎤 목소리 학습",
+          const Text("🎤 learning the voice info",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
           const SizedBox(height: 8),
           ...List.generate(_scripts.length, (i) {
@@ -621,7 +621,7 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
                   ? _startVoiceTraining
                   : null,
               icon: Icon(_isListening ? Icons.mic : Icons.mic_none),
-              label: Text(_isListening ? "듣는 중..." : "목소리 인식 시작"),
+              label: Text(_isListening ? "Listening to..." : "start to detect the voice"),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.indigo,
                 foregroundColor: Colors.white,
@@ -634,7 +634,7 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
     );
   }
 
-  // ── 등록 버튼 ──
+  // ── registration button ──
   Widget _buildRegisterButton() {
     return SizedBox(
       width: double.infinity,
@@ -642,7 +642,7 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
       child: ElevatedButton.icon(
         onPressed: _step == 2 ? _addOwner : null,
         icon: const Icon(Icons.person_add_rounded),
-        label: const Text("등록 완료",
+        label: const Text("Complete to register",
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.green,
@@ -654,7 +654,7 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
     );
   }
 
-  // ── 위치 추적 ──
+  // ── detecting the position ──
   Widget _buildLocationSection() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -669,16 +669,16 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
           const Row(children: [
             Icon(Icons.location_on, color: Colors.red, size: 20),
             SizedBox(width: 8),
-            Text("📍 로봇 위치 추적",
+            Text("📍 Detecting the robot position",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
           ]),
           const SizedBox(height: 8),
           Text(
             _robotPosition == null
-                ? "위치 데이터 없음 — 버튼을 눌러 현재 위치를 가져오세요."
-                : "위도: ${_robotPosition!.latitude.toStringAsFixed(5)}\n"
-                    "경도: ${_robotPosition!.longitude.toStringAsFixed(5)}\n"
-                    "정확도: ${_robotPosition!.accuracy.toStringAsFixed(1)}m",
+                ? "No position data - Bring the current postion by pushing the button."
+                : "Latitude: ${_robotPosition!.latitude.toStringAsFixed(5)}\n"
+                    "Longitude: ${_robotPosition!.longitude.toStringAsFixed(5)}\n"
+                    "Accuracy: ${_robotPosition!.accuracy.toStringAsFixed(1)}m",
             style: const TextStyle(fontSize: 13),
           ),
           const SizedBox(height: 10),
@@ -693,7 +693,7 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
                   : const Icon(Icons.my_location),
-              label: Text(_isLocating ? "위치 확인 중..." : "현재 위치 가져오기"),
+              label: Text(_isLocating ? "Checking the position..." : "Bringing the current position"),
               style: OutlinedButton.styleFrom(foregroundColor: Colors.red),
             ),
           ),
@@ -702,12 +702,12 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
     );
   }
 
-  // ── 주인 리스트 ──
+  // ── User List ──
   Widget _buildOwnerList() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("👥 등록된 주인 (${_ownerList.length}명)",
+        Text("👥 Registered User(s) (${_ownerList.length})",
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
         const SizedBox(height: 8),
         if (_ownerList.isEmpty)
@@ -721,7 +721,7 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
             child: const Column(children: [
               Icon(Icons.person_off_outlined, size: 40, color: Colors.grey),
               SizedBox(height: 8),
-              Text("등록된 주인이 없습니다.",
+              Text("Cannot find the registered user(s).",
                   style: TextStyle(color: Colors.grey)),
             ]),
           )
@@ -748,12 +748,12 @@ class _MultiOwnerControlScreenState extends State<MultiOwnerControlScreen> {
                   children: [
                     Text(
                       owner.hasFace
-                          ? "얼굴: 눈 간격 ${owner.faceFeatures['eyeDistance']?.toStringAsFixed(1)}px"
-                          : "얼굴: 기본값 사용",
+                          ? "Face: Eyes Interval ${owner.faceFeatures['eyeDistance']?.toStringAsFixed(1)}px"
+                          : "Face: Default Usage",
                       style: const TextStyle(fontSize: 12),
                     ),
                     Text(
-                      "목소리: ${owner.voicePitch.toStringAsFixed(1)}Hz",
+                      "Voice: ${owner.voicePitch.toStringAsFixed(1)}Hz",
                       style: const TextStyle(fontSize: 12),
                     ),
                   ],
