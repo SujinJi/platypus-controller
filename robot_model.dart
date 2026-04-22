@@ -7,7 +7,7 @@ class RobotData{
   factory RobotData.fromJson(Map<String, dynamic> json){
     return RobotData(
       battery: json['battery'] ?? 0,
-      status: json['status'] ?? '연결 안 됨'
+      status: json['status'] ?? 'Unable to connect'
       );
   }
 }
