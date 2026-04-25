@@ -1,23 +1,38 @@
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
+/* -------------------------------------------------------
+ * MqttManager — 싱글톤
+ *
+ * 수정 내용:
+ *   1. factory 생성자로 싱글톤 보장 → 클라이언트 ID 충돌 방지
+ *   2. connect() 내부의 subscribe / updates.listen 제거
+ *      → 구독은 각 화면(robot_status.dart)에서만 담당
+ *   3. isConnected getter 유지 — main.dart 호환
+ * ------------------------------------------------------- */
 class MqttManager {
-  final String serverUri = 'test.mosquitto.org';
-  final String clientId = 'sujin_robot_app_client';
-  late MqttServerClient client;
+  static final MqttManager _instance = MqttManager._internal();
+  factory MqttManager() => _instance;
+  MqttManager._internal();
 
-  // detecting the conncetion state to be able to operate the APP without HW
+  final String serverUri = 'test.mosquitto.org';
+  final String clientId  = 'sujin_robot_app_client';
+
+  late MqttServerClient client;
   bool _isConnected = false;
   bool get isConnected => _isConnected;
 
   Future<void> connect() async {
+    // 이미 연결되어 있으면 재연결 생략
+    if (_isConnected) return;
+
     client = MqttServerClient(serverUri, clientId);
     client.port = 1883;
     client.logging(on: false);
     client.keepAlivePeriod = 20;
 
     client.onDisconnected = () {
-      print('=== MQTT connect initionalized ===');
+      print('=== MQTT 연결 해제됨 ===');
       _isConnected = false;
     };
 
@@ -28,48 +43,25 @@ class MqttManager {
     client.connectionMessage = connMessage;
 
     try {
-      print('=== Connecting to the robot server... ===');
+      print('=== 로봇 서버 연결 중... ===');
       await client.connect();
     } catch (e) {
-      // without HW -> if it comes out "fail", not let APP be logged out
-      print('=== failed to connect (convert to 'Dummy Mode'): $e ===');
+      print('=== 연결 실패 (더미 모드로 전환): $e ===');
       client.disconnect();
       return;
     }
 
     if (client.connectionStatus!.state == MqttConnectionState.connected) {
-      print('=== Approved! ===');
+      print('=== 연결 성공! ===');
       _isConnected = true;
-
-      client.subscribe('robot/status', MqttQos.atLeastOnce);
-
-      client.updates!.listen((c) {
-        final MqttPublishMessage recMess = c[0].payload as MqttPublishMessage;
-        final String pt =
-            MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-        print('=== Reception form the robot: $pt ===');
-      });
-    }
-  }
-
-  void sendCommand(String command) {
-    if (!_isConnected) {
-      print('=== [Dummy Mode] Request: $command (Not be sent in actual) ===');
-      return;
-    }
-    try {
-      final builder = MqttClientPayloadBuilder();
-      builder.addString(command);
-      client.publishMessage('robot/control', MqttQos.exactlyOnce, builder.payload!);
-      print('=== Sending the request to the robot: $command ===');
-    } catch (e) {
-      print('=== Unable to send the request: $e ===');
+      // ※ subscribe / updates.listen 은 여기서 하지 않음
+      //    각 화면에서 필요한 토픽만 구독하도록 위임
     }
   }
 
   void disconnect() {
     if (_isConnected) client.disconnect();
     _isConnected = false;
-    print('=== End to connect ===');
+    print('=== 연결 종료 ===');
   }
 }
